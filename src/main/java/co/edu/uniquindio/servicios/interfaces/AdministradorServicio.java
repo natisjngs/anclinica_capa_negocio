@@ -32,4 +32,8 @@ public interface AdministradorServicio {
     public int cambiarEstadoPQRS(int codigoPQRS, EstadoPQRS estadoPQRS) throws Exception;
 
     public List<ItemCitaDTO> listarCitas() throws Exception;
+
+    public int subirImagen(int codigoPQRS, String imagenPQRS) throws Exception;
+
+    public double generarEstadisticaMedico(String cedula) throws Exception;
 }

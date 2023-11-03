@@ -79,12 +79,12 @@ INSERT INTO Atencion (cita_codigo, codigo, especializacion, fecha_atencion, diag
        (4, 4, 2, '2023-10-21 10:00:00', 'Infección de garganta', 'Antibióticos y garganta caliente', 'Evitar el frío'),
        (5, 5, 1, '2023-10-22 13:30:00', 'Examen de rutina', 'N/A', 'Salud en general');
 
-INSERT INTO PQRS (cita_codigo, codigo, estado_pqrs, fecha_creacion, tipo_pqrs, motivo) VALUES
-    (1, 1, 1, '2023-10-18', 1, 'Sugerencia de mejora en el servicio'),
-    (2, 2, 1, '2023-10-19', 2, 'Queja sobre el tiempo de espera'),
-    (3, 3, 1, '2023-10-20', 1, 'Solicitud de información sobre un tratamiento'),
-    (4, 4, 1, '2023-10-21', 3, 'Elogio al médico de atención'),
-    (5, 5, 1, '2023-10-22', 3, 'Otro asunto importante');
+INSERT INTO PQRS (cita_codigo, codigo, estado_pqrs, fecha_creacion, tipo_pqrs, imagen, motivo) VALUES
+    (1, 1, 1, '2023-10-18', 1, 'fotoRes1.jpg', 'Sugerencia de mejora en el servicio'),
+    (2, 2, 1, '2023-10-19', 2, 'fotoRes2.jpg', 'Queja sobre el tiempo de espera'),
+    (3, 3, 1, '2023-10-20', 1, 'fotoRes3.jpg', 'Solicitud de información sobre un tratamiento'),
+    (4, 4, 1, '2023-10-21', 3, 'fotoRes4.jpg', 'Elogio al médico de atención'),
+    (5, 5, 1, '2023-10-22', 3, 'fotoRes5.jpg', 'Otro asunto importante');
 
 INSERT INTO Mensaje (codigo, cuenta_codigo, pqrs_codigo, fecha_creacion, texto) VALUES
     (1, 6, 1, '2023-10-18 10:00:00', 'Hola, ¿cómo te encuentras?'),

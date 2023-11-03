@@ -39,6 +39,9 @@ public class PQRS implements Serializable {
     @Column(nullable = false, length = 30)
     private EstadoPQRS estado_pqrs;
 
+    @Column(nullable = true)
+    private String imagen;
+
     @ManyToOne
     private Cita cita;
 

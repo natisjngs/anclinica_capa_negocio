@@ -186,6 +186,26 @@ public class AdministradorServicioTest {
         }
     }
 
+    @Test
+    public void subirImagenTest() {
+        try {
+            int codigo = administradorServicio.subirImagen(1, "foto_nueva.jpg");
+            Assertions.assertNotEquals(0, codigo);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void generarEstadisticaMedicoTest() {
+        try {
+            double codigo = administradorServicio.generarEstadisticaMedico("1234567890");
+            Assertions.assertNotEquals(0.0, codigo);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static LocalTime convertirStringToLocalTime(String tiempoStr) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         return LocalTime.parse(tiempoStr, formatter);

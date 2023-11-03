@@ -2,6 +2,7 @@ package co.edu.uniquindio.servicios.impl;
 
 import co.edu.uniquindio.dto.*;
 import co.edu.uniquindio.modelo.entidades.*;
+import co.edu.uniquindio.modelo.enums.EstadoCita;
 import co.edu.uniquindio.modelo.enums.EstadoPQRS;
 import co.edu.uniquindio.modelo.enums.EstadoUsuario;
 import co.edu.uniquindio.repositorios.*;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -259,5 +261,38 @@ public class AdministradorServicioImpl implements AdministradorServicio {
         ) ).toList();
 
         return respuesta;
+    }
+
+    @Override
+    public int subirImagen(int codigoPQRS, String imagenPQRS) throws Exception {
+        Optional<PQRS> opcional = pqrsRepo.findById(codigoPQRS);
+
+        if( opcional.isEmpty() ){
+            throw new Exception("No existe un PQRS con el código "+codigoPQRS);
+        }
+
+        PQRS pqrs = opcional.get();
+        pqrs.setImagen(imagenPQRS);
+
+        pqrsRepo.save(pqrs);
+
+        return pqrs.getCodigo();
+    }
+
+    @Override
+    public double generarEstadisticaMedico(String cedula) throws Exception {
+        List<Cita> citas = citaRepo.findByMedicoCedula(cedula);
+
+        citas = citas.stream()
+                .filter(c -> c.getEstado_cita().equals(EstadoCita.COMPLETADA))
+                .collect(Collectors.toList());
+
+        if(citas.isEmpty()) {
+            //throw new Exception("No existen citas completadas.");
+        }
+
+        double calificacion = citas.size() * 0.85;
+
+        return calificacion;
     }
 }
