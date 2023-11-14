@@ -33,7 +33,7 @@ public record MedicoDTO(
         @NotBlank
         @Email
         @Length(max = 80)
-        String correo,
+        String email,
         @NotBlank
         String password,
         @NotBlank

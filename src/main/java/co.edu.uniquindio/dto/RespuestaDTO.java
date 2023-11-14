@@ -5,6 +5,6 @@ import java.time.LocalDateTime;
 public record RespuestaDTO (
         int codigoMensaje,
         String mensaje,
-        String correo,
+        String email,
         LocalDateTime fecha) {
 }

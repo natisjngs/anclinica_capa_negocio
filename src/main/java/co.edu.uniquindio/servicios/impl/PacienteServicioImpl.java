@@ -6,10 +6,13 @@ import co.edu.uniquindio.modelo.enums.EstadoCita;
 import co.edu.uniquindio.modelo.enums.EstadoPQRS;
 import co.edu.uniquindio.modelo.enums.EstadoUsuario;
 import co.edu.uniquindio.repositorios.*;
+import co.edu.uniquindio.servicios.interfaces.EmailServicio;
 import co.edu.uniquindio.servicios.interfaces.PacienteServicio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import co.edu.uniquindio.modelo.entidades.Paciente;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,8 +32,10 @@ public class PacienteServicioImpl implements PacienteServicio {
     @Autowired
     private final AtencionRepo atencionRepo;
 
-    private boolean estaRepetidoCorreo(String correo) {
-        return pacienteRepo.findByCorreo(correo) != null;
+    private final EmailServicio emailServicio;
+
+    private boolean estaRepetidoCorreo(String email) {
+        return pacienteRepo.findByEmail(email) != null;
     }
 
     private boolean estaRepetidaCedula(String cedula) {
@@ -46,7 +51,7 @@ public class PacienteServicioImpl implements PacienteServicio {
             throw new Exception("La cédula " + pacienteDTO.cedula() + " ya está en uso");
         }
 
-        if (estaRepetidoCorreo(pacienteDTO.correo())) {
+        if (estaRepetidoCorreo(pacienteDTO.email())) {
             throw new Exception("El correo " + pacienteDTO.cedula() + " ya está en uso");
         }
 
@@ -57,7 +62,7 @@ public class PacienteServicioImpl implements PacienteServicio {
         paciente.setCiudad(pacienteDTO.ciudad());
         paciente.setFecha_nacimiento(pacienteDTO.fecha_nacimiento());
         paciente.setEstado_usuario(pacienteDTO.estadoUsuario());
-        paciente.setCorreo(pacienteDTO.correo());
+        paciente.setEmail(pacienteDTO.email());
         paciente.setPassword(pacienteDTO.password());
         paciente.setUrl_foto(pacienteDTO.urlFoto());
         paciente.setTipo_sangre(pacienteDTO.tipoSangre());
@@ -81,7 +86,7 @@ public class PacienteServicioImpl implements PacienteServicio {
         buscado.setNombre(pacienteDTO.nombre());
         buscado.setCiudad(pacienteDTO.ciudad());
         buscado.setEstado_usuario(pacienteDTO.estadoUsuario());
-        buscado.setCorreo(pacienteDTO.correo());
+        buscado.setEmail(pacienteDTO.email());
         buscado.setPassword(pacienteDTO.password());
         buscado.setUrl_foto(pacienteDTO.urlFoto());
 
@@ -143,10 +148,10 @@ public class PacienteServicioImpl implements PacienteServicio {
 
     @Override
     public int crearPQRS(PqrsDTO pqrsDTO) throws Exception {
-        Optional<Cita> opcionalCita = citaRepo.findById(pqrsDTO.codigo_cita());
+        Optional<Cita> opcionalCita = citaRepo.findById(pqrsDTO.codigocita());
 
         if(opcionalCita.isEmpty()){
-            throw new Exception("No existe una cita con el código: "+pqrsDTO.codigo_cita());
+            throw new Exception("No existe una cita con el código: "+pqrsDTO.codigocita());
         }
 
         List<PQRS> l_pqrs = pqrsRepo.findByCita_PacienteCedula(opcionalCita.get().getPaciente().getCedula());
@@ -240,5 +245,30 @@ public class PacienteServicioImpl implements PacienteServicio {
         ) ).toList();
 
         return respuesta;
+    }
+
+    public int registrarse(PacienteDTO pacienteDTO) {
+        Paciente paciente = pacienteDTO.toEntity(); // Revisar con el profe
+        paciente.setPassword(new BCryptPasswordEncoder().encode(paciente.getPassword()));
+        paciente.setEstado_usuario(EstadoUsuario.ACTIVO);
+
+        paciente = pacienteRepo.save(paciente);
+        return paciente.getCodigo();
+    }
+
+    public void enviarLinkRecuperacion(String emailPaciente) {
+        try {
+            emailServicio.enviarEmail(new EmailDTO(
+                    emailPaciente,
+                    "olvido su contraseña",
+                    "Hola, para recuperar su contraseña siga el siguiente enlace %s/cambiar-password/%d".formatted( // esa es la ruta, (tener en cuenta)
+                            EnvironmentVariables.frontDomainName,
+                            pacienteRepo.findByEmail(emailPaciente).orElseThrow(() -> new RuntimeException("Paciente no encontrado")).getCodigo()
+
+                    )
+            ));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

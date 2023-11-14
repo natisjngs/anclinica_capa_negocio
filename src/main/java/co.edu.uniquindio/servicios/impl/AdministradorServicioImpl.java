@@ -33,19 +33,23 @@ public class AdministradorServicioImpl implements AdministradorServicio {
     @Autowired
     private final CitaRepo citaRepo;
 
-    private boolean estaRepetidoCorreo(String correo) {
-        return medicoRepo.findByCorreo(correo) != null;
+    private boolean estaRepetidoCorreo(String email) {
+
+        return medicoRepo.findByCorreo(email) != null;
     }
 
     private boolean estaRepetidaCedula(String cedula) {
+
         return medicoRepo.findByCedula(cedula) != null;
     }
 
     @Override
-    public Medico obtenerMedico(String cedula) throws Exception { return medicoRepo.findByCedula(cedula); }
+    public Medico obtenerMedico(String cedula) throws Exception {
+        return medicoRepo.findByCedula(cedula); }
 
     @Override
-    public Horario obtenerHorario(int codigo) throws Exception { return horarioRepo.findByCodigo(codigo); }
+    public Horario obtenerHorario(int codigo) throws Exception {
+        return horarioRepo.findByCodigo(codigo); }
 
     @Override
     public String crearMedico(MedicoDTO medicoDTO) throws Exception {
@@ -53,8 +57,8 @@ public class AdministradorServicioImpl implements AdministradorServicio {
             throw new Exception("La cédula " + medicoDTO.cedula() + " ya está en uso");
         }
 
-        if (estaRepetidoCorreo(medicoDTO.correo())) {
-            throw new Exception("El correo " + medicoDTO.cedula() + " ya está en uso");
+        if (estaRepetidoCorreo(medicoDTO.email())) {
+            throw new Exception("El correo " + medicoDTO.email() + " ya está en uso");
         }
 
         Medico medico = new Medico();
@@ -66,7 +70,7 @@ public class AdministradorServicioImpl implements AdministradorServicio {
         medico.setHora_fin(medicoDTO.hora_fin());
         medico.setCiudad(medicoDTO.ciudad());
         medico.setEstado_usuario(medicoDTO.estadoUsuario());
-        medico.setCorreo(medicoDTO.correo());
+        medico.setEmail(medicoDTO.email());
         medico.setPassword(medicoDTO.password());
         medico.setUrl_foto(medicoDTO.urlFoto());
 
@@ -119,7 +123,7 @@ public class AdministradorServicioImpl implements AdministradorServicio {
         buscado.setHora_fin(medicoDTO.hora_fin());
         buscado.setCiudad(medicoDTO.ciudad());
         buscado.setEstado_usuario(medicoDTO.estadoUsuario());
-        buscado.setCorreo(medicoDTO.correo());
+        buscado.setEmail(medicoDTO.email());
         buscado.setPassword(medicoDTO.password());
         buscado.setUrl_foto(medicoDTO.urlFoto());
 
@@ -165,7 +169,7 @@ public class AdministradorServicioImpl implements AdministradorServicio {
         return mensajes.stream().map(m -> new RespuestaDTO(
                 m.getCodigo(),
                 m.getTexto(),
-                m.getCuenta().getCorreo(),
+                m.getCuenta().getEmail(),
                 m.getFecha_creacion()
         )).toList();
     }

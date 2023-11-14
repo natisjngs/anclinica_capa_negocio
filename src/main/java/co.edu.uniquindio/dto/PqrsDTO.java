@@ -12,7 +12,7 @@ public record PqrsDTO(
 
         String motivo,
 
-        int codigo_cita,
+        int codigocita,
 
         EstadoPQRS estado_pqrs
 ) {

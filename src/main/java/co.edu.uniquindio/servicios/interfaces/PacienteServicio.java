@@ -15,4 +15,6 @@ public interface PacienteServicio {
     public List<ItemPQRSDTO> listarPQRS(String cedula) throws Exception;
     public List<ItemCitaDTO> listarCitas(String cedula) throws Exception;
     public List<ItemAtencionDTO> listarAtenciones(String cedula) throws Exception;
+    public int registrarse(PacienteDTO pacienteDTO);
+    public void enviarLinkRecuperacion(String emailPaciente);
 }
